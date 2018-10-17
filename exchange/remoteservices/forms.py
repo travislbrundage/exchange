@@ -23,7 +23,8 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from geonode.services import enumerations
-from exchange.remoteservices.serviceprocessors.handler import get_service_handler
+from exchange.remoteservices.serviceprocessors.handler \
+    import get_service_handler
 try:
     if 'ssl_pki' not in settings.INSTALLED_APPS:
         raise ImportError
