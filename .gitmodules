@@ -1,7 +1,7 @@
 [submodule "vendor/geonode"]
 	path = vendor/geonode
 	url = git@github.com:boundlessgeo/geonode.git
-	branch = exchange/1.4.x
+	branch = gvs-pki
 [submodule "vendor/maploom"]
 	path = vendor/maploom
 	url = git@github.com:boundlessgeo/MapLoom.git
@@ -18,6 +18,7 @@
 [submodule "vendor/geonode-elasticsearch"]
 	path = vendor/geonode-elasticsearch
 	url = git@github.com:boundlessgeo/geonode-elasticsearch.git
+	branch = ps/pki/cnp5-elastic
 [submodule "vendor/docker"]
 	path = vendor/docker
 	url = git@github.com:boundlessgeo/docker.git
