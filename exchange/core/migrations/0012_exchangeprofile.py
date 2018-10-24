@@ -9,13 +9,16 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('core', '0010_auto_20180125_1314'),
+        ('core', '0011_auto_20181022_1413'),
     ]
 
     def create_exchange_profiles(apps, schema_editor):
         ExchangeProfile = apps.get_model('core', 'ExchangeProfile')
         Profile = apps.get_model('people', 'Profile')
-        for profile in Profile.objects.all():
+        user_profiles = [profile for profile in Profile.objects.all() if
+                         profile.is_staff == False and
+                         profile.is_superuser == False]
+        for profile in user_profiles:
             ep = ExchangeProfile.objects.create(user=profile)
             ep.save()
 
@@ -29,12 +32,12 @@ class Migration(migrations.Migration):
                     default=True,
                     help_text='User can upload layers and documents',
                     verbose_name='Content Creator')),
-                ('content_manager', models.BooleanField(
+                ('service_manager', models.BooleanField(
                     default=True,
                     help_text='User can register remote services',
-                    verbose_name='Content Manager')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL,
-                                           null=True)),
+                    verbose_name='Service Manager')),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL,
+                                              null=True)),
             ],
         ),
         migrations.RunPython(create_exchange_profiles)

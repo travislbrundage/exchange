@@ -29,7 +29,7 @@ $(document).ready(function () {
 {% block body_outer %}
 
 <div class="page-header">
-  {% if profile.content_creator == True %}
+  {% if profile.content_creator == True or profile.is_staff == True or profile.is_superuser == True %}
     <a href="{% url 'uploads-list' %}" id="add_data_button"><div class="pull-right" style="margin-top: 25px; font-size: 14px">Manage Your Data</div></a>
   {% endif %}
   <h2 class="page-title">{% trans "Add Data" %}</h2>
@@ -42,6 +42,9 @@ $(document).ready(function () {
   <div class="row" style="margin:20px 0 30px">
 	<form id="uploads-new-form" action="{% url 'uploads-new' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
+        <div style="height:0px;overflow:hidden">
+        <div style="height:0px;overflow:hidden">
+        <div style="height:0px;overflow:hidden">
         <div style="height:0px;overflow:hidden">
             {{form}}
         </div>

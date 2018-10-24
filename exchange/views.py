@@ -962,7 +962,9 @@ def layer_create(request, template='createlayer/layer_create.html'):
     """
     error = None
     profile = ExchangeProfile.objects.get(user=request.user)
-    if request.method == 'POST' and profile.content_creator is True:
+    if request.method == 'POST' and \
+            (profile.content_creator is True or
+             profile.is_staff is True or profile.is_superuser is True):
         form = NewLayerForm(request.POST)
         if form.is_valid():
             try:
@@ -1009,7 +1011,9 @@ def services(request):
 def register_service(request):
     service_register_template = "services/service_register.html"
     profile = ExchangeProfile.objects.get(user=request.user)
-    if request.method == "POST" and profile.content_manager is True:
+    if request.method == 'POST' and \
+            (profile.service_manager is True or
+             profile.is_staff is True or profile.is_superuser is True):
         form = CreateServiceForm(request.POST)
         if form.is_valid():
             service_handler = form.cleaned_data["service_handler"]

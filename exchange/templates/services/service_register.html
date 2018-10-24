@@ -12,8 +12,8 @@
 <div class="page-header">
   <h2>{% trans "Register New Service" %}</h2>
 </div>
-    {% if profile.content_manager == False %}
-    <p>You are not a Content Manager, so you may not register a service. Please contact an Administator if you believe you should be a Content Manager.</p>
+    {% if profile.service_manager == False %}
+    <p>You are not a Service Manager, so you may not register a service. Please contact an Administator if you believe you should be a Service Manager.</p>
     {% endif %}
     <form method="POST" id="service_register_form">
     {% csrf_token %}
@@ -56,8 +56,11 @@
 <script type="text/javascript">
 $(document).ready(function () {
     // disable service registration button if user is not a content manager
-    if ('{{ profile.content_manager }}' != 'True') {
-        $('#submit_button').prop('disabled', true);
+    if ('{{ profile.service_manager }}' != 'True') {
+        // staff and superusers should be able to regardless
+        if ('{{ profile.is_staff }}' != 'True' && '{{ profile.is_superuser }}' == 'True') {
+            $('#submit_button').prop('disabled', true);
+        }
     }
     $('#service_register_form').submit(function () {
         $("#progressModal").modal("show");

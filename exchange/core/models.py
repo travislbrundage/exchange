@@ -212,12 +212,12 @@ class CSWRecordReference(models.Model):
 
 
 class ExchangeProfile(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True)
     content_creator = models.BooleanField(
         _('Content Creator'),
         default=True,
         help_text=_('User can upload layers and documents'))
-    content_manager = models.BooleanField(
-        _('Content Manager'),
+    service_manager = models.BooleanField(
+        _('Service Manager'),
         default=True,
         help_text=_('User can register remote services'))

@@ -71,7 +71,9 @@
       $('#permissions').val(JSON.stringify(permissionsString($('#permission_form'),'base')));
     });
     if ('{{ profile.content_creator }}' != 'True') {
-      $('#upload-button').prop('disabled', true);
+        if ('{{ profile.is_staff }}' != 'True' && '{{ profile.is_superuser }}' == 'True') {
+            $('#upload-button').prop('disabled', true);
+        }
     }
 </script>
 {% endblock extra_script %}
