@@ -61,6 +61,11 @@ urlpatterns = patterns(
 
     url(r'^proxy/', views.proxy),
 
+    url(r'^documents/upload/?$',
+        login_required(views.ExchangeDocumentUploadView.as_view()),
+        name='document_upload'),
+    url(r'^layers/create/$', views.layer_create, name='layer_create'),
+
     (r'^services/', include('exchange.remoteservices.urls')),
 )
 
@@ -82,11 +87,11 @@ if settings.ENABLE_SOCIAL_LOGIN is True and settings.ANYWHERE_ENABLED is True:
 # If django-osgeo-importer is enabled...
 if 'osgeo_importer' in settings.INSTALLED_APPS:
     # Replace the default Exchange 'layers/upload'
-    from osgeo_importer.views import FileAddView
+    # Change this to use our custom FileAddView
     urlpatterns += [
         url(
             r'^layers/upload$',
-            login_required(FileAddView.as_view()),
+            login_required(views.ExchangeFileAddView.as_view()),
             name='layer_upload'
         )
     ]

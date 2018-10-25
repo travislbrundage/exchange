@@ -38,14 +38,39 @@ from django.conf import settings
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from geonode.services.views import _gen_harvestable_ids
 from django.template import RequestContext
+from exchange.core.models import ExchangeProfile
+from geonode.people.models import Profile
 
 logger = logging.getLogger("geonode.core.layers.views")
 
 
 @login_required
+def services(request):
+    """This view shows the list of all registered services"""
+    profile = Profile.objects.get(username=request.user)
+    try:
+        profile = ExchangeProfile.objects.get(user=profile)
+    except ExchangeProfile.DoesNotExist:
+        pass
+    return render(
+        request,
+        "services/service_list.html",
+        {"services": Service.objects.all(),
+         "profile": profile,}
+    )
+
+
+@login_required
 def register_service(request):
     service_register_template = "services/service_register.html"
-    if request.method == "POST":
+    profile = Profile.objects.get(username=request.user)
+    try:
+        profile = ExchangeProfile.objects.get(user=profile)
+    except ExchangeProfile.DoesNotExist:
+        pass
+    if request.method == "POST" and \
+            (profile.service_manager is True or
+             profile.is_staff is True or profile.is_superuser is True):
         form = ExchangeCreateServiceForm(request.POST)
         if form.is_valid():
             service_handler = form.cleaned_data["service_handler"]
@@ -72,11 +97,13 @@ def register_service(request):
                         kwargs={"service_id": service.id})
             )
         else:
-            result = render(request, service_register_template, {"form": form})
+            result = render(request, service_register_template, {"form": form,
+                                                                 "profile": profile})
     else:
         form = ExchangeCreateServiceForm()
         result = render(
-            request, service_register_template, {"form": form})
+            request, service_register_template, {"form": form,
+                                                 "profile": profile})
     return result
 
 

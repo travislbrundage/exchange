@@ -10,7 +10,7 @@ from exchange.version import get_version
 from geonode import get_version as get_version_geonode
 from geonode.maps.views import _resolve_map, clean_config
 from geonode.layers.views import _resolve_layer, _PERMISSION_MSG_METADATA
-from geonode.base.models import TopicCategory
+from geonode.base.models import TopicCategory, ResourceBase
 from guardian.shortcuts import assign_perm
 from pip._vendor import pkg_resources
 from exchange.tasks import create_record, delete_record
@@ -67,6 +67,18 @@ except ImportError:
     pki_request = None
     protocol_relative_url = None
     protocol_relative_to_scheme = None
+
+from exchange.core.models import ExchangeProfile
+from geonode.documents.views import DocumentUploadView
+from django.contrib.auth.decorators import login_required
+from django.template.defaultfilters import slugify
+from geonode.contrib.createlayer.utils import create_layer
+from geonode.contrib.createlayer.forms import NewLayerForm
+from geonode.services.models import Service
+import json
+from django.utils.translation import ugettext as _
+from geonode.documents.models import Document
+from geonode.people.models import Profile
 
 
 logger = logging.getLogger(__name__)
@@ -938,3 +950,172 @@ def handler500(request):
 
 class AuthErrorPage(TemplateView):
     template_name = 'account/auth-failed.html'
+
+
+@login_required
+def layer_create(request, template='createlayer/layer_create.html'):
+    """
+    Create an empty layer.
+    """
+    error = None
+    profile = Profile.objects.get(username=self.request.user)
+    try:
+        profile = ExchangeProfile.objects.get(user=profile)
+    except ExchangeProfile.DoesNotExist:
+        pass
+    if request.method == 'POST' and \
+            (profile.content_creator is True or
+             profile.is_staff is True or profile.is_superuser is True):
+        form = NewLayerForm(request.POST)
+        if form.is_valid():
+            try:
+                name = form.cleaned_data['name']
+                name = slugify(name.replace(".", "_"))
+                title = form.cleaned_data['title']
+                geometry_type = form.cleaned_data['geometry_type']
+                attributes = form.cleaned_data['attributes']
+                permissions = form.cleaned_data["permissions"]
+                layer = create_layer(name, title, request.user.username,
+                                     geometry_type, attributes)
+                layer.set_permissions(json.loads(permissions))
+                return HttpResponseRedirect(
+                    '/maps/new?layer=%s' % layer.typename)
+            except Exception as e:
+                error = '%s (%s)' % (e.message, type(e))
+    else:
+        form = NewLayerForm()
+
+    ctx = {
+        'form': form,
+        'is_layer': True,
+        'error': error,
+        'profile': profile
+    }
+
+    return render_to_response(template, RequestContext(request, ctx))
+
+
+class ExchangeDocumentUploadView(DocumentUploadView):
+    def get_context_data(self, **kwargs):
+        context = \
+            super(ExchangeDocumentUploadView, self).get_context_data(**kwargs)
+        profile = Profile.objects.get(username=self.request.user)
+        try:
+            profile = ExchangeProfile.objects.get(user=profile)
+        except ExchangeProfile.DoesNotExist:
+            pass
+        context['profile'] = profile
+        return context
+
+    def form_valid(self, form):
+        """
+        If the form is valid, save the associated model.
+        """
+        self.object = form.save(commit=False)
+        self.object.owner = self.request.user
+        profile = ExchangeProfile.objects.get(user=self.request.user)
+        if profile.content_creator is False:
+            return self.form_invalid(form)
+
+        resource_id = self.request.POST.get('resource', None)
+        if resource_id:
+            self.object.content_type = ResourceBase.objects.get(
+                id=resource_id).polymorphic_ctype
+            self.object.object_id = resource_id
+        # by default, if RESOURCE_PUBLISHING=True then document.is_published
+        # must be set to False
+        is_published = True
+        if settings.RESOURCE_PUBLISHING:
+            is_published = False
+        self.object.is_published = is_published
+
+        self.object.save()
+        self.object.set_permissions(form.cleaned_data['permissions'])
+
+        abstract = None
+        date = None
+        regions = []
+        keywords = []
+        bbox = None
+
+        if getattr(settings, 'EXIF_ENABLED', False):
+            try:
+                from geonode.contrib.exif.utils import \
+                    exif_extract_metadata_doc
+                exif_metadata = exif_extract_metadata_doc(self.object)
+                if exif_metadata:
+                    date = exif_metadata.get('date', None)
+                    keywords.extend(exif_metadata.get('keywords', []))
+                    bbox = exif_metadata.get('bbox', None)
+                    abstract = exif_metadata.get('abstract', None)
+            except:
+                print("Exif extraction failed.")
+
+        if getattr(settings, 'NLP_ENABLED', False):
+            try:
+                from geonode.contrib.nlp.utils import nlp_extract_metadata_doc
+                nlp_metadata = nlp_extract_metadata_doc(self.object)
+                if nlp_metadata:
+                    regions.extend(nlp_metadata.get('regions', []))
+                    keywords.extend(nlp_metadata.get('keywords', []))
+            except:
+                print("NLP extraction failed.")
+
+        if abstract:
+            self.object.abstract = abstract
+            self.object.save()
+
+        if date:
+            self.object.date = date
+            self.object.date_type = "Creation"
+            self.object.save()
+
+        if len(regions) > 0:
+            self.object.regions.add(*regions)
+
+        if len(keywords) > 0:
+            self.object.keywords.add(*keywords)
+
+        if bbox:
+            bbox_x0, bbox_x1, bbox_y0, bbox_y1 = bbox
+            Document.objects.filter(id=self.object.pk).update(
+                bbox_x0=bbox_x0,
+                bbox_x1=bbox_x1,
+                bbox_y0=bbox_y0,
+                bbox_y1=bbox_y1)
+
+        if getattr(settings, 'SLACK_ENABLED', False):
+            try:
+                from geonode.contrib.slack.utils import \
+                    build_slack_message_document, send_slack_message
+                send_slack_message(build_slack_message_document(
+                    "document_new", self.object))
+            except:
+                print("Could not send slack message for new document.")
+
+        return HttpResponseRedirect(
+            reverse(
+                'document_metadata',
+                args=(
+                    self.object.id,
+                )))
+
+
+# If django-osgeo-importer is enabled...
+if 'osgeo_importer' in settings.INSTALLED_APPS:
+    from osgeo_importer.views import FileAddView
+    from osgeo_importer.importers import VALID_EXTENSIONS
+
+    class ExchangeFileAddView(FileAddView):
+        def render_to_response(self, context, **response_kwargs):
+            # grab list of valid importer extensions for use in templates
+            context["VALID_EXTENSIONS"] = ", ".join(VALID_EXTENSIONS)
+
+            profile = Profile.objects.get(username=self.request.user)
+            try:
+                profile = ExchangeProfile.objects.get(user=profile)
+            except ExchangeProfile.DoesNotExist:
+                pass
+            context = {'errors': context['form'].errors,
+                       'profile': profile}
+            return self.render_to_json_response(context, **response_kwargs)
