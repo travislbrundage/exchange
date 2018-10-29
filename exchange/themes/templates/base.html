@@ -76,7 +76,7 @@
                   </a>
                   <ul class="dropdown-menu">
                     <li><a href="{% url "search" %}?type=map">{% trans "Explore Maps" %}</a></li>
-                    <li> <a href="{% url "new_map" %}">{% trans "Create Map" %}</a></li>
+                    <li> <a href="{% url "new_map" %}" id="create-map">{% trans "Create Map" %}</a></li>
                     {% if STORYSCAPES_ENABLED %}
                     <li><a href="/story/new">Compose Story</a></li>
                     {% endif %}
@@ -322,6 +322,15 @@
       $(function () {
         $('#modal').modal('toggle');
       });
+    </script>
+    <script>
+      // disable layer creation button and add attribute button if user is not a content creator
+      if ('{{ perms.maps.add_map }}' != 'True') {
+          // staff and superusers should be able to regardless
+          if ('{{ user.is_staff }}' != 'True' && '{{ user.is_superuser }}' != 'True') {
+              $('#create-map').css('display', 'none');
+          }
+      }
     </script>
     <script type="text/javascript" src="{% url "lang" %}"></script>
 
