@@ -7,7 +7,7 @@
 <div class="page-header">
   <a href="{% url "register_service" %}" class="btn btn-primary pull-right" id="service_register_button">{% trans "Register a new Service" %}</a>
   <h2>{% trans "Remote Services" %}</h2>
-  {% if perms.services.add_service == False %}
+  {% if perms.services.add_service == False and user.is_staff == False and user.is_superuser == False %}
     <p>You are not a Service Manager, so you may not register a service. Please contact an Administator if you believe you should be a Service Manager.</p>
   {% endif %}
 </div>
