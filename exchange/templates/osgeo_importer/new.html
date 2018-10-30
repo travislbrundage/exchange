@@ -17,7 +17,7 @@
 {{ block.super }}
 <script type="text/javascript">
 $(document).ready(function () {
-    // disable service registration button if user is not a content manager
+    // disable layer creation button and add attribute button if user is not a content creator
     if ('{{ perms.layers.add_layer }}' != 'True') {
         // staff and superusers should be able to regardless
         if ('{{ user.is_staff }}' != 'True' && '{{ user.is_superuser }}' != 'True') {
@@ -37,7 +37,7 @@ $(document).ready(function () {
   {% endif %}
   <h2 class="page-title">{% trans "Add Data" %}</h2>
   {% if perms.layers.add_layer == False and user.is_staff == False and user.is_superuser == False %}
-    <p>You are not a Content Creator, so you may not upload a layer. Please contact an Administator if you believe you should be a Content Creator.</p>
+    <p>{% trans "You are not a Content Creator, so you may not upload a layer. Please contact an Administator if you believe you should be a Content Creator." %}</p>
   {% endif %}
 </div>
 

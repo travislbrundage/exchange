@@ -70,7 +70,9 @@
     $('#upload_form').submit(function(){
       $('#permissions').val(JSON.stringify(permissionsString($('#permission_form'),'base')));
     });
+    // disable document upload button and add attribute button if user is not a content creator
     if ('{{ perms.documents.add_document }}' != 'True') {
+        // staff and superusers should be able to regardless
         if ('{{ user.is_staff }}' != 'True' && '{{ user.is_superuser }}' != 'True') {
             $('#upload-button').prop('disabled', true);
         }
