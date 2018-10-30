@@ -58,7 +58,24 @@ class Migration(migrations.Migration):
         for perm in permissions:
             group.permissions.add(perm)
 
+    def add_default_group_permissions(apps, schema_editor):
+        AuthGroup = apps.get_model("auth", "group")
+        Profile = apps.get_model("people", "Profile")
+        all_users = [profile for profile in Profile.objects.all()
+                     if profile.is_staff == False and
+                     profile.is_superuser == False and
+                     profile.username != 'AnonymousUser']
+
+        # Adding the content_creator and service_manager groups
+        # to all users by default
+        content_creator = AuthGroup.objects.get(name='content_creator')
+        service_manager = AuthGroup.objects.get(name='service_manager')
+        for user in all_users:
+            user.groups.add(content_creator)
+            user.groups.add(service_manager)
+
     operations = [
         migrations.RunPython(create_group),
-        migrations.RunPython(change_name)
+        migrations.RunPython(change_name),
+        migrations.RunPython(add_default_group_permissions)
     ]
