@@ -10,7 +10,7 @@ from exchange.version import get_version
 from geonode import get_version as get_version_geonode
 from geonode.maps.views import _resolve_map, clean_config
 from geonode.layers.views import _resolve_layer, _PERMISSION_MSG_METADATA
-from geonode.base.models import TopicCategory, ResourceBase
+from geonode.base.models import TopicCategory
 from guardian.shortcuts import assign_perm
 from pip._vendor import pkg_resources
 from exchange.tasks import create_record, delete_record
@@ -18,8 +18,6 @@ from django.core.urlresolvers import reverse, resolve
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import login
 from social_django.utils import psa
-
-from django.utils.translation import ugettext as _
 from geonode.utils import llbbox_to_mercator, bbox_to_projection
 from geonode.utils import forward_mercator, build_social_links
 from geonode.utils import default_map_config, GXPLayer, GXPMap
@@ -40,6 +38,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import F
+from django.contrib.auth.decorators import login_required
+from django.template.defaultfilters import slugify
+from geonode.contrib.createlayer.utils import create_layer
+from geonode.contrib.createlayer.forms import NewLayerForm
+from django.utils.translation import ugettext as _
+from geonode.people.models import Profile
 
 if 'geonode.geoserver' in settings.INSTALLED_APPS:
     from geonode.geoserver.helpers import ogc_server_settings
@@ -68,20 +72,6 @@ except ImportError:
     pki_request = None
     protocol_relative_url = None
     protocol_relative_to_scheme = None
-
-from geonode.documents.views import DocumentUploadView
-from django.contrib.auth.decorators import login_required
-from django.template.defaultfilters import slugify
-from geonode.contrib.createlayer.utils import create_layer
-from geonode.contrib.createlayer.forms import NewLayerForm
-from django.contrib import messages
-from geonode.services.models import Service
-from geonode.services.forms import CreateServiceForm
-from geonode.services import enumerations
-import json
-from django.utils.translation import ugettext as _
-from geonode.documents.models import Document
-from geonode.people.models import Profile
 
 
 logger = logging.getLogger(__name__)

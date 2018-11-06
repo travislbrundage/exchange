@@ -62,8 +62,8 @@ class Migration(migrations.Migration):
         AuthGroup = apps.get_model("auth", "group")
         Profile = apps.get_model("people", "Profile")
         all_users = [profile for profile in Profile.objects.all()
-                     if profile.is_staff == False and
-                     profile.is_superuser == False and
+                     if profile.is_staff is False and
+                     profile.is_superuser is False and
                      profile.username != 'AnonymousUser']
 
         # Adding the content_creator and service_manager groups
