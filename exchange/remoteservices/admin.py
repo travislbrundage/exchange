@@ -33,9 +33,8 @@ class ExchangeServiceAdminForm(ResourceBaseAdminForm):
 
 
 class ExchangeServiceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'type', 'method')
-    list_display_links = ('id', 'name', )
-    list_filter = ('type', 'method')
+    list_display = ('id',)
+    list_display_links = ('id', )
     form = ExchangeServiceAdminForm
 
 
