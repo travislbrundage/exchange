@@ -33,8 +33,8 @@ class ExchangeServiceAdminForm(ResourceBaseAdminForm):
 
 
 class ExchangeServiceAdmin(admin.ModelAdmin):
-    list_display = ('id',)
-    list_display_links = ('id', )
+    list_display = ('id', 'geonode_service')
+    list_display_links = ('id', 'geonode_service')
     form = ExchangeServiceAdminForm
 
 
