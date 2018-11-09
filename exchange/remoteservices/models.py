@@ -57,7 +57,7 @@ def exchange_service_post_save(instance, sender, **kwargs):
     # update their license to correspond to the Service license
     for layer in instance.exchangelayer_set.all():
         layer.geonode_layer.license = instance.geonode_service.license
-        layer.save()
+        layer.geonode_layer.save()
 
 
 signals.post_save.connect(exchange_service_post_save, sender=ExchangeService)
