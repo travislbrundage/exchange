@@ -91,7 +91,8 @@ def edit_service(request, service_id):
     Edit an existing Service
     """
     service_obj = get_object_or_404(Service, pk=service_id)
-    if service_obj.exchangeservice is not None:
+    if 'exchangeservice' in service_obj \
+            and service_obj.exchangeservice is not None:
         exchange_service_obj = service_obj.exchangeservice
     else:
         exchange_service_obj = ExchangeService(geonode_service=service_obj)

@@ -16,8 +16,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ExchangeLayer',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('exchange_service', models.ForeignKey(blank=True, to='remoteservices.ExchangeService', null=True)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False,
+                                        auto_created=True, primary_key=True)),
+                ('exchange_service', models.ForeignKey(
+                    blank=True, to='remoteservices.ExchangeService',
+                    null=True)),
                 ('geonode_layer', models.OneToOneField(to='layers.Layer')),
             ],
         ),

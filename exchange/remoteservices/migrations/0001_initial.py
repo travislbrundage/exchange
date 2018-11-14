@@ -14,13 +14,20 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ExchangeService',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('poc_name', models.CharField(max_length=255, null=True, blank=True)),
-                ('poc_position', models.CharField(max_length=255, null=True, blank=True)),
-                ('poc_email', models.CharField(max_length=255, null=True, blank=True)),
-                ('poc_phone', models.CharField(max_length=255, null=True, blank=True)),
-                ('poc_address', models.CharField(max_length=255, null=True, blank=True)),
-                ('geonode_service', models.OneToOneField(to='services.Service')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False,
+                                        auto_created=True, primary_key=True)),
+                ('poc_name', models.CharField(max_length=255, null=True,
+                                              blank=True)),
+                ('poc_position', models.CharField(max_length=255, null=True,
+                                                  blank=True)),
+                ('poc_email', models.CharField(max_length=255, null=True,
+                                               blank=True)),
+                ('poc_phone', models.CharField(max_length=255, null=True,
+                                               blank=True)),
+                ('poc_address', models.CharField(max_length=255, null=True,
+                                                 blank=True)),
+                ('geonode_service', models.OneToOneField(
+                    to='services.Service')),
             ],
         ),
     ]
