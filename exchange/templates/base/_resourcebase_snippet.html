@@ -9,12 +9,27 @@
     <div class="col-xs-12 item-container" ng-if="item.detail_url">
       <div class="col-xs-12 profile-avatar">
         <div class="col-xs-4 item-thumb">
+            {% endverbatim %}
+            {% if MAPLOOM_ENABLED %}
+            {% verbatim %}
             <a ng-if="item.type == 'layer'" href="/maps/new?layer={{item.typename}}">
               <img class="thumbnail" onerror="this.src='/static/geonode/img/missing_thumb.png'" ng-src="/thumbnails/{{item.type}}s/{{item.typename}}"/>
             </a>
             <a ng-if="item.type == 'map'" href="/{{item.type}}s/{{item.id}}/view">
               <img class="thumbnail" onerror="this.src='/static/geonode/img/missing_thumb.png'" ng-src="/thumbnails/{{item.type}}s/{{item.id}}"/>
             </a>
+            {% endverbatim %}
+            {% else %}
+            {% verbatim %}
+            <a ng-if="item.type == 'layer'" href="{{ item.detail_url }}">
+              <img class="thumbnail" onerror="this.src='/static/geonode/img/missing_thumb.png'" ng-src="/thumbnails/{{item.type}}s/{{item.typename}}"/>
+            </a>
+            <a ng-if="item.type == 'map'" href="{{ item.detail_url }}">
+              <img class="thumbnail" onerror="this.src='/static/geonode/img/missing_thumb.png'" ng-src="/thumbnails/{{item.type}}s/{{item.id}}"/>
+            </a>
+            {% endverbatim %}
+            {% endif %}
+            {% verbatim %}
            <a ng-if="item.type == 'document'" href="/{{item.type}}s/{{item.id}}">
               <img class="thumbnail" onerror="this.src='/static/geonode/img/missing_thumb.png'" ng-src="/thumbnails/{{item.type}}s/{{item.id}}"/>
             </a>
@@ -25,10 +40,20 @@
           {% verbatim %}
           <p class="item-meta"><span class="item-category">{{ item.category__gn_description == '[]' ? '' : item.category__gn_description }}</span></p>
           <h4>
+            {% endverbatim %}
+            {% if MAPLOOM_ENABLED %}
+            {% verbatim %}
             <a ng-if="item.detail_url.indexOf('/maps/') > -1" href="/maps/{{item.id}}/view">{{ item.title }}</a>
             <a ng-if="item.detail_url.indexOf('/story/') > -1" href="/story/{{item.id}}">{{ item.title }}</a>
             <a ng-if="item.detail_url.indexOf('/layers/') > -1" href="/maps/new?layer={{item.typename}}">{{ item.title }}</a>
             <a ng-if="item.detail_url.indexOf('/story/') == -1 && item.detail_url.indexOf('/maps/') == -1 && item.detail_url.indexOf('/layers/') == -1" href="{{ item.detail_url }}">{{ item.title }}</a>
+            {% endverbatim %}
+            {% else %}
+            {% verbatim %}
+            <a href="{{ item.detail_url }}">{{ item.title }}</a>
+            {% endverbatim %}
+            {% endif %}
+            {% verbatim %}
           </h4>
           <h5 ng-if="item.source_host">{{ item.source_host }}</h5>
           <p class="owner"><a href="/people/profile/{{ item.owner__username }}"><i class="fa fa-user"></i> {{ item.owner__username }}</a></p>

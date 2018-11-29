@@ -56,15 +56,27 @@ urlpatterns = patterns(
     url(r'^capabilities/', views.capabilities, name='capabilities'),
     url(r'^logout/', views.logout, name='exchange_logout'),
 
-    url(r'^maps/new$', views.new_map, name="new_map"),
-    url(r'^maps/new/data$', views.new_map_json, name='new_map_json'),
-
     url(r'^proxy/', views.proxy),
 
     (r'^services/', include('exchange.remoteservices.urls')),
 
     url(r'^layers/create/$', views.layer_create, name='layer_create'),
 )
+
+if settings.MAPLOOM_ENABLED:
+    urlpatterns += (
+        url(r'^maps/new$', views.new_map, name="new_map"),
+        url(r'^maps/new/data$', views.new_map_json, name='new_map_json'),
+    )
+else:
+    urlpatterns += (
+        # Override maploom's views to disable them
+        url(r'^maps/new$', views.maploom_http_404_view, name="maploom_404"),
+        url(r'^maps/(?P<mapid>[^/]+)/view$', views.maploom_http_404_view,
+            name="maploom_404"),
+        url(r'^maps/(?P<mapid>[^/]+)/edit$', views.maploom_http_404_view,
+            name="maploom_404"),
+    )
 
 if 'ssl_pki' in settings.INSTALLED_APPS:
     from ssl_pki.urls import urlpatterns as pki_urls

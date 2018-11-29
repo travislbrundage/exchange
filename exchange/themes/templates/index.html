@@ -67,12 +67,27 @@
       <div ng-app="featured">
         <div ng-repeat="item in featured | limitTo:4">
           <div class="col-md-3">
+            {% endverbatim %}
+            {% if MAPLOOM_ENABLED %}
+            {% verbatim %}
             <a ng-if="item.detail_url.indexOf('/maps/') > -1" href="{{ item.detail_url }}/view">
               <img class="thumbnail" ng-src="/thumbnails{{ item.detail_url }}" />
             </a>
             <a ng-if="item.detail_url.indexOf('/layers/') > -1" href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.detail_url.substring(8) }}">
               <img class="thumbnail" ng-src="/thumbnails{{ item.detail_url }}" />
             </a>
+            {% endverbatim %}
+            {% else %}
+            {% verbatim %}
+            <a ng-if="item.detail_url.indexOf('/maps/') > -1" href="{{ item.detail_url }}">
+              <img class="thumbnail" ng-src="/thumbnails{{ item.detail_url }}" />
+            </a>
+            <a ng-if="item.detail_url.indexOf('/layers/') > -1" href="{{ item.detail_url }}">
+              <img class="thumbnail" ng-src="/thumbnails{{ item.detail_url }}" />
+            </a>
+            {% endverbatim %}
+            {% endif %}
+            {% verbatim %}
             <a ng-if="item.detail_url.indexOf('/documents/') > -1" href="{{ item.detail_url }}">
               <img class="thumbnail" ng-src="/thumbnails{{ item.detail_url }}" />
             </a>

@@ -306,7 +306,9 @@
     </div>
 
     <li class="list-group-item">
+        {% if MAPLOOM_ENABLED %}
         <a href="{% url "new_map" %}?layer={{resource.service_typename}}" class="btn btn-primary btn-block">{% trans "Open in Map Viewer" %}</a>
+        {% endif %}
     </li>
 
 
@@ -381,7 +383,9 @@
                 <a class="btn btn-default btn-block btn-xs" href="{% url "layer_replace" resource.service_typename %}">{% trans "Replace" %}</a>
                 {% endif %}
                 {% if resource.storeType == 'dataStore' and "change_layer_data" in layer_perms %}
-                <a class="btn btn-default btn-block btn-xs" href="{% url "new_map" %}?layer={{resource.service_typename}}">{% trans "Edit data" %}</a>
+                  {% if MAPLOOM_ENABLED %}
+                    <a class="btn btn-default btn-block btn-xs" href="{% url "new_map" %}?layer={{resource.service_typename}}">{% trans "Edit data" %}</a>
+                  {% endif %}
                 {% endif %}
                 {% if "delete_resourcebase" in perms_list %}
                 <a class="btn btn-danger btn-block btn-xs" href="{% url "layer_remove" resource.service_typename %}">{% trans "Remove" %}</a>
@@ -474,7 +478,9 @@
             <li>{% trans "You are not a Content Creator, so you may not create a map. Please contact an Administator if you believe you should be a Content Creator." %}</li>
           {% endif %}
           <li style="margin-top:10px;">
+              {% if MAPLOOM_ENABLED %}
               <a href="{% url "new_map" %}?layer={{resource.service_typename}}" class="btn btn-primary btn-block" id="new-map-button">{% trans "Create a Map" %}</a>
+              {% endif %}
           </li>
         </ul>
     </li>
