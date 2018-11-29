@@ -63,7 +63,12 @@ urlpatterns = patterns(
     url(r'^layers/create/$', views.layer_create, name='layer_create'),
 )
 
-if settings.MAPLOOM_DISABLED:
+if settings.MAPLOOM_ENABLED:
+    urlpatterns += (
+        url(r'^maps/new$', views.new_map, name="new_map"),
+        url(r'^maps/new/data$', views.new_map_json, name='new_map_json'),
+    )
+else:
     urlpatterns += (
         # Override maploom's views to disable them
         url(r'^maps/new$', views.maploom_http_404_view, name="maploom_404"),
@@ -71,11 +76,6 @@ if settings.MAPLOOM_DISABLED:
             name="maploom_404"),
         url(r'^maps/(?P<mapid>[^/]+)/edit$', views.maploom_http_404_view,
             name="maploom_404"),
-    )
-else:
-    urlpatterns += (
-        url(r'^maps/new$', views.new_map, name="new_map"),
-        url(r'^maps/new/data$', views.new_map_json, name='new_map_json'),
     )
 
 if 'ssl_pki' in settings.INSTALLED_APPS:

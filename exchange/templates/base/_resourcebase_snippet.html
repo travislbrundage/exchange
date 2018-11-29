@@ -25,7 +25,7 @@
           {% verbatim %}
           <p class="item-meta"><span class="item-category">{{ item.category__gn_description == '[]' ? '' : item.category__gn_description }}</span></p>
           <h4>
-            {% if not MAPLOOM_DISABLED %}
+            {% if MAPLOOM_ENABLED %}
             <a ng-if="item.detail_url.indexOf('/maps/') > -1" href="/maps/{{item.id}}/view">{{ item.title }}</a>
             <a ng-if="item.detail_url.indexOf('/story/') > -1" href="/story/{{item.id}}">{{ item.title }}</a>
             <a ng-if="item.detail_url.indexOf('/layers/') > -1" href="/maps/new?layer={{item.typename}}">{{ item.title }}</a>

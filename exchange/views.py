@@ -970,13 +970,13 @@ def layer_create(request, template='createlayer/layer_create.html'):
                 layer = create_layer(name, title, request.user.username,
                                      geometry_type, attributes)
                 layer.set_permissions(json.loads(permissions))
-                if settings.MAPLOOM_DISABLED:
-                    return HttpResponseRedirect(reverse(
-                        'layer_detail',
-                        args=([layer.service_typename])
-                    ))
-                return HttpResponseRedirect(
-                    '/maps/new?layer=%s' % layer.typename)
+                if settings.MAPLOOM_ENABLED:
+                    return HttpResponseRedirect(
+                        '/maps/new?layer=%s' % layer.typename)
+                return HttpResponseRedirect(reverse(
+                    'layer_detail',
+                    args=([layer.service_typename])
+                ))
             except Exception as e:
                 error = '%s (%s)' % (e.message, type(e))
     else:

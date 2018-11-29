@@ -83,7 +83,7 @@
                   <ul class="dropdown-menu">
                     <li><a href="{% url "search" %}?type=map">{% trans "Explore Maps" %}</a></li>
                     {% if perms.maps.add_map == True or user.is_staff == True or user.is_superuser == True %}
-                      {% if not MAPLOOM_DISABLED %}
+                      {% if MAPLOOM_ENABLED %}
                       <li> <a href="{% url "new_map" %}" id="create-map">{% trans "Create Map" %}</a></li>
                       {% endif %}
                     {% endif %}

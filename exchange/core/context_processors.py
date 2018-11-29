@@ -74,7 +74,7 @@ def resource_variables(request):
         ES_SEARCH=getattr(settings, 'ES_SEARCH', False),
         PROXY_BASEMAP=getattr(settings, 'PROXY_BASEMAP', False),
         GOOGLE_ANALYTICS_ID=getattr(settings, 'GOOGLE_ANALYTICS_ID', False),
-        MAPLOOM_DISABLED=getattr(settings, 'MAPLOOM_DISABLED', False),
+        MAPLOOM_ENABLED=getattr(settings, 'MAPLOOM_ENABLED', True),
     )
 
     return defaults
