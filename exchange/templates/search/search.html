@@ -11,10 +11,15 @@
   <div class="page-header">
     <h2>{% trans "Search" %} <span ng-if="text_query != ''">:</span> <span ng-bind="text_query"></span></h2>
   </div>
-  
-  {% with include_create_map='true' %}
-  {% include "search/_search_content.html" %}
-  {% endwith %}
+  {% if not MAPLOOM_DISABLED %}
+    {% with include_create_map='true' %}
+    {% include "search/_search_content.html" %}
+    {% endwith %}
+  {% else %}
+    {% with include_create_map='false' %}
+    {% include "search/_search_content.html" %}
+    {% endwith %}
+  {% endif %}
 {% endblock %}
 
 {% block extra_script %}

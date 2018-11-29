@@ -113,6 +113,10 @@ def documentation_page(request):
     return HttpResponseRedirect('/static/docs/html/index.html')
 
 
+def maploom_http_404_view(request):
+    raise Http404('MapLoom has been disabled')
+
+
 def get_pip_version(project):
     version = [
         p.version for p in pkg_resources.working_set
@@ -966,6 +970,11 @@ def layer_create(request, template='createlayer/layer_create.html'):
                 layer = create_layer(name, title, request.user.username,
                                      geometry_type, attributes)
                 layer.set_permissions(json.loads(permissions))
+                if settings.MAPLOOM_DISABLED:
+                    return HttpResponseRedirect(reverse(
+                        'layer_detail',
+                        args=([layer.service_typename])
+                    ))
                 return HttpResponseRedirect(
                     '/maps/new?layer=%s' % layer.typename)
             except Exception as e:

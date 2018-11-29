@@ -25,10 +25,14 @@
           {% verbatim %}
           <p class="item-meta"><span class="item-category">{{ item.category__gn_description == '[]' ? '' : item.category__gn_description }}</span></p>
           <h4>
+            {% if not MAPLOOM_DISABLED %}
             <a ng-if="item.detail_url.indexOf('/maps/') > -1" href="/maps/{{item.id}}/view">{{ item.title }}</a>
             <a ng-if="item.detail_url.indexOf('/story/') > -1" href="/story/{{item.id}}">{{ item.title }}</a>
             <a ng-if="item.detail_url.indexOf('/layers/') > -1" href="/maps/new?layer={{item.typename}}">{{ item.title }}</a>
             <a ng-if="item.detail_url.indexOf('/story/') == -1 && item.detail_url.indexOf('/maps/') == -1 && item.detail_url.indexOf('/layers/') == -1" href="{{ item.detail_url }}">{{ item.title }}</a>
+            {% else %}
+            <a href="{{ item.detail_url }}">{{ item.title }</a>
+            {% endif %}
           </h4>
           <h5 ng-if="item.source_host">{{ item.source_host }}</h5>
           <p class="owner"><a href="/people/profile/{{ item.owner__username }}"><i class="fa fa-user"></i> {{ item.owner__username }}</a></p>

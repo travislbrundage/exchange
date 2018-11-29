@@ -138,7 +138,9 @@
     </ul>
     <ul class="list-group">
       <li class="list-group-item"><a href="{% url "layer_upload" %}"><i class="fa fa-cloud-upload"></i> {% trans "Upload new layers" %}</a></li>
+      {% if not MAPLOOM_DISABLED %}
       <li class="list-group-item"><a href="{% url "new_map" %}"><i class="fa fa-map-marker"></i> {% trans "Create a new map" %}</a></li>
+      {% endif %}
       <li class="list-group-item"><a href="{% url "user-activity" profile.username %}"><i class="fa fa-fire"></i> {% trans "My Activities" %}</a></li>
     </ul>
     <ul class="list-group">
