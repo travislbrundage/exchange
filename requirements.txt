@@ -43,7 +43,7 @@ regex==2018.11.03
 # should be with [secure] for pyOpenSSL, cryptography, etc. for modern SSL
 # urllib3[secure]==1.22
 # minimum of requests 2.12 needed, though not sure if it is urllib3-bug-free
-requests==2.20.0
+requests==2.20.1
 # more robust SSL in urllib3 with pyOpenSSL
 # pyOpenSSL==17.5.0
 # PKI component validations and db field encryption
