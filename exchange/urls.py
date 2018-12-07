@@ -59,14 +59,13 @@ urlpatterns = patterns(
     url(r'^proxy/', views.proxy),
 
     (r'^services/', include('exchange.remoteservices.urls')),
-
-    url(r'^layers/create/$', views.layer_create, name='layer_create'),
 )
 
 if settings.MAPLOOM_ENABLED:
     urlpatterns += (
         url(r'^maps/new$', views.new_map, name="new_map"),
         url(r'^maps/new/data$', views.new_map_json, name='new_map_json'),
+        url(r'^layers/create/$', views.layer_create, name='layer_create'),
     )
 else:
     urlpatterns += (
@@ -76,6 +75,8 @@ else:
             name="maploom_404"),
         url(r'^maps/(?P<mapid>[^/]+)/edit$', views.maploom_http_404_view,
             name="maploom_404"),
+        url(r'^layers/create/$', views.maploom_http_404_view,
+            name='maploom404'),
     )
 
 if 'ssl_pki' in settings.INSTALLED_APPS:
