@@ -64,7 +64,9 @@
                   <li role="separator" class="divider"></li>
                   {% if perms.layers.add_layer == True or user.is_staff == True or user.is_superuser == True %}
                   <li><a href="{% url "layer_upload" %}" id="upload-layer">{% trans "Upload Layer" %}</a></li>
-                  <li><a href="{% url "layer_create" %}" id="create-layer">{% trans "Create Layer" %}</a></li>
+                      {% if MAPLOOM_ENABLED %}
+                          <li><a href="{% url "layer_create" %}" id="create-layer">{% trans "Create Layer" %}</a></li>
+                      {% endif %}
                   {% endif %}
                   {% if perms.documents.add_document == True or user.is_staff == True or user.is_superuser == True %}
                   <li><a href="{% url "document_upload" %}" id="upload-document">{% trans "Upload Document" %}</a></li>
@@ -75,6 +77,7 @@
                   <li><a href="{% url "services" %}">{% trans "Manage Remote Services" %}</a></li>
                 </ul>
               </li>
+              {% if MAPLOOM_ENABLED %}
               <li id="nav_maps">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                     {% trans "Maps" %}
@@ -83,15 +86,14 @@
                   <ul class="dropdown-menu">
                     <li><a href="{% url "search" %}?type=map">{% trans "Explore Maps" %}</a></li>
                     {% if perms.maps.add_map == True or user.is_staff == True or user.is_superuser == True %}
-                      {% if MAPLOOM_ENABLED %}
                       <li> <a href="{% url "new_map" %}" id="create-map">{% trans "Create Map" %}</a></li>
-                      {% endif %}
                     {% endif %}
                     {% if STORYSCAPES_ENABLED %}
                     <li><a href="/story/new">Compose Story</a></li>
                     {% endif %}
                   </ul>
               </li>
+              {% endif %}
               <li>
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   {% trans "About" %}
