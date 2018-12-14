@@ -75,6 +75,7 @@ def resource_variables(request):
         PROXY_BASEMAP=getattr(settings, 'PROXY_BASEMAP', False),
         GOOGLE_ANALYTICS_ID=getattr(settings, 'GOOGLE_ANALYTICS_ID', False),
         MAPLOOM_ENABLED=getattr(settings, 'MAPLOOM_ENABLED', True),
+        GEOGIG_ENABLED=getattr(settings, 'GEOGIG_ENABLED', False),
     )
 
     return defaults
