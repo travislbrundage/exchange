@@ -275,6 +275,7 @@ GEOGIG_DATASTORE_DIR = os.getenv(
 PG_DATASTORE = os.getenv('PG_DATASTORE', 'exchange_imports')
 PG_GEOGIG = str2bool(os.getenv('PG_GEOGIG', 'True'))
 
+GEOGIG_ENABLED = str2bool(os.getenv('GEOGIG_ENABLED', 'False'))
 OGC_SERVER = {
     'default': {
         'BACKEND': 'geonode.geoserver',
@@ -287,7 +288,7 @@ OGC_SERVER = {
         'MAPFISH_PRINT_ENABLED': True,
         'PRINT_NG_ENABLED': True,
         'GEONODE_SECURITY_ENABLED': True,
-        'GEOGIG_ENABLED': True,
+        'GEOGIG_ENABLED': GEOGIG_ENABLED,
         'WMST_ENABLED': False,
         'BACKEND_WRITE_ENABLED': True,
         'WPS_ENABLED': True,
