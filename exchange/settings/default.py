@@ -360,7 +360,7 @@ DATABASES['exchange_imports'] = dj_database_url.parse(
 DATABASES[
     'exchange_imports']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 
-WGS84_MAP_CRS = str2bool(os.getenv('WGS84_MAP_CRS', 'False'))
+WGS84_MAP_CRS = True # str2bool(os.getenv('WGS84_MAP_CRS', 'False'))
 if WGS84_MAP_CRS:
     DEFAULT_MAP_CRS = "EPSG:4326"
 
