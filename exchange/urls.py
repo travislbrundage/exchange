@@ -79,6 +79,12 @@ else:
             name='maploom404'),
     )
 
+if not settings.INVITES_ENABLED:
+    urlpatterns += (
+        url(r'^account/invite_user$', views.invites_http_404_view, 
+            name='invite_404')
+    )
+
 if 'ssl_pki' in settings.INSTALLED_APPS:
     from ssl_pki.urls import urlpatterns as pki_urls
     urlpatterns += pki_urls

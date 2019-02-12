@@ -118,6 +118,8 @@ def documentation_page(request):
 def maploom_http_404_view(request):
     raise Http404('MapLoom has been disabled')
 
+def invites_http_404_view(request):
+    raise Http404('Invites have been disabled')
 
 def get_pip_version(project):
     version = [
