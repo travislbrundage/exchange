@@ -76,6 +76,7 @@ def resource_variables(request):
         GOOGLE_ANALYTICS_ID=getattr(settings, 'GOOGLE_ANALYTICS_ID', False),
         MAPLOOM_ENABLED=getattr(settings, 'MAPLOOM_ENABLED', True),
         GEOGIG_ENABLED=getattr(settings, 'GEOGIG_ENABLED', False),
+        INVITES_ENABLED=getattr(settings, 'INVITES_ENABLED', True),
     )
 
     return defaults
