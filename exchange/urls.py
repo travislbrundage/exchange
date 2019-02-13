@@ -81,8 +81,8 @@ else:
 
 if not settings.INVITES_ENABLED:
     urlpatterns += (
-        url(r'^account/invite_user$', views.invites_http_404_view, 
-            name='invite_404')
+        url(r'^account/invite_user/$', views.invites_http_404_view, 
+            name='invite_404'),
     )
 
 if 'ssl_pki' in settings.INSTALLED_APPS:
