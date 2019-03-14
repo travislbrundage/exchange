@@ -13,5 +13,8 @@
 {% endif %}
 
 {% if theme.custom_analytics %}
+<script>
+  var oam_remote = '{{ OAM_REMOTE_USER }}';
+</script>
   {{ theme.custom_analytics | safe }}
 {% endif %}
