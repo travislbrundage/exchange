@@ -6,8 +6,7 @@ import pytest
 from django.core.management import call_command
 
 
-@pytest.mark.skipif(settings.ES_SEARCH is False,
-                    reason="Only run if using unified search")
+@pytest.mark.skip(reason="Only run if using unified search")
 class GeonodeElasticsearchTest(ExchangeTest):
 
     def setUp(self):
