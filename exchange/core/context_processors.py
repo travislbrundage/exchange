@@ -39,7 +39,7 @@ if settings.GEOQUERY_ENABLED:
 def resource_variables(request):
     """Global exchange values to pass to templates"""
     OAM_REMOTE_USER = None
-    if settings.GEOQUERY_ENABLED:
+    if settings.GEOAXIS_ENABLED:
         if settings.GEOAXIS_HEADER in request.META:
             OAM_REMOTE_USER = request.META[settings.GEOAXIS_HEADER]
     defaults = dict(
