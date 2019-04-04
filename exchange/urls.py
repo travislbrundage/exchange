@@ -59,6 +59,19 @@ urlpatterns = patterns(
     url(r'^proxy/', views.proxy),
 
     (r'^services/', include('exchange.remoteservices.urls')),
+
+    url(r'^layers/create/$', views.layer_create, name='layer_create'),
+    url(r'^autocomplete-layer',
+        views.LayerAutocomplete.as_view(),
+        name='autocomplete_layer'),
+    url(r'^autocomplete-document',
+        views.DocumentAutocomplete.as_view(),
+        name='autocomplete_document'),
+    url(r'^autocomplete-map',
+        views.MapAutocomplete.as_view(),
+        name='autocomplete_map'),
+    url(r'^search-form', views.process_search_form(),
+        name='process-search-form')
 )
 
 if settings.MAPLOOM_ENABLED:

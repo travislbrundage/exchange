@@ -22,6 +22,8 @@ from django.conf import settings
 from exchange.version import get_version
 import logging
 from urlparse import urlparse
+from exchange.forms import SearchForm
+from django.urls import reverse
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +44,12 @@ def resource_variables(request):
     if settings.GEOAXIS_ENABLED:
         if settings.GEOAXIS_HEADER in request.META:
             OAM_REMOTE_USER = request.META[settings.GEOAXIS_HEADER]
+
+    SEARCH_BAR = {
+        'url': reverse('process-search-form'),
+        'form': SearchForm(),
+    }
+
     defaults = dict(
         VERSION=get_version(),
         MAP_CRS=getattr(settings, 'DEFAULT_MAP_CRS', None),
@@ -83,6 +91,7 @@ def resource_variables(request):
         INVITES_ENABLED=getattr(settings, 'INVITES_ENABLED', True),
         DOCUMENTS_ENABLED=getattr(settings, 'DOCUMENTS_ENABLED', True),
         OAM_REMOTE_USER=OAM_REMOTE_USER,
+        SEARCH_BAR=SEARCH_BAR,
     )
 
     return defaults

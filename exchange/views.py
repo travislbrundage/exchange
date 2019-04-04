@@ -46,6 +46,10 @@ from django.utils.translation import ugettext as _
 from geonode.people.models import Profile
 from exchange.remoteservices.serviceprocessors.handler \
     import get_service_handler
+from dal import autocomplete
+from geonode.documents.models import Document
+from elasticsearch_app.views import elastic_search
+from exchange.forms import SearchForm
 
 if 'geonode.geoserver' in settings.INSTALLED_APPS:
     from geonode.geoserver.helpers import ogc_server_settings
@@ -1044,3 +1048,72 @@ def layer_create(request, template='createlayer/layer_create.html'):
     }
 
     return render_to_response(template, RequestContext(request, ctx))
+
+
+def process_search_form(request):
+    # Here we should get the form response as one object
+    # fomr the response.data.objects below, which sould be one result
+    # dict from ES
+    # we should always be a request.method = POST but I guess we can check
+    # Just in case somehow
+    if request.method == 'POST':
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            text_query = form.cleaned_data['text_query']
+
+    url = ''
+    return redirect(url)
+
+# Autocomplete views - Layer, Maps, Documents
+class LayerAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        # response = resolve('/api/base/search/?limit=10&type=layer&q=')
+        # Does self.request include self.q here? Possibly not?
+        self.request.GET['q'] = self.q
+        response = elastic_search(self.request, 'layer')
+        # If the above doesn't work, just make a GET request to the URL
+        # '/api/base/search/?limit=10&type=layer&q=' + self.q
+
+        # Do I need to do anything like grab list of titles?
+        # Don't think so, this code can probably be removed
+        results = []
+        for item in response.data.objects:
+            results.append(item.title)
+        return response.data.objects
+
+
+class MapAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        # response = resolve('/api/base/search/?limit=10&type=layer&q=')
+        # Does self.request include self.q here? Possibly not?
+        self.request.GET['q'] = self.q
+        response = elastic_search(self.request, 'map')
+        # If the above doesn't work, just make a GET request to the URL
+        # '/api/base/search/?limit=10&type=layer&q=' + self.q
+
+        # Do I need to do anything like grab list of titles?
+        # Don't think so, this code can probably be removed
+        results = []
+        for item in response.data.objects:
+            results.append(item.title)
+        return response.data.objects
+
+
+class DocumentAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        # response = resolve('/api/base/search/?limit=10&type=layer&q=')
+        # Does self.request include self.q here? Possibly not?
+        self.request.GET['q'] = self.q
+        response = elastic_search(self.request, 'document')
+        # If the above doesn't work, just make a GET request to the URL
+        # '/api/base/search/?limit=10&type=layer&q=' + self.q
+
+        # Do I need to do anything like grab list of titles?
+        # Don't think so, this code can probably be removed
+        results = []
+        for item in response.data.objects:
+            results.append(item.title)
+        return response.data.objects

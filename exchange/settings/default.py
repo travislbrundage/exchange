@@ -205,6 +205,8 @@ INSTALLED_APPS = (
     'composer',
     'social_django',
     'exchange.remoteservices',
+    'dal',
+    'dal_select2',
 ) + ADDITIONAL_APPS + INSTALLED_APPS
 
 MIGRATION_MODULES = {
