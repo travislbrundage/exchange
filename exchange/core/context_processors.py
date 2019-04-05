@@ -81,6 +81,7 @@ def resource_variables(request):
         MAPLOOM_ENABLED=getattr(settings, 'MAPLOOM_ENABLED', True),
         GEOGIG_ENABLED=getattr(settings, 'GEOGIG_ENABLED', False),
         INVITES_ENABLED=getattr(settings, 'INVITES_ENABLED', True),
+        DOCUMENTS_ENABLED=getattr(settings, 'DOCUMENTS_ENABLED', True),
         OAM_REMOTE_USER=OAM_REMOTE_USER,
     )
 
