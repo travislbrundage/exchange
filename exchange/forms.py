@@ -20,18 +20,26 @@
 
 from django import forms
 from dal import autocomplete
+from dal import widgets as dalwidgets
+from dal_select2 import widgets as ds2widgets
 from django.utils.translation import ugettext as _
-from geonode.layer.models import Layer
+# Maybe we only want to autocomplete on Layers?
+# from geonode.layers.models import Layer
 from geonode.base.models import ResourceBase
 
 
+class TextInputModelSelect2(dalwidgets.QuerySetSelectMixin,
+                            ds2widgets.Select2WidgetMixin,
+                            forms.TextInput):
+    """Custom widget just to be a text I guess"""
+
 class SearchForm(forms.Form):
-    text_query = forms.ModelChoiceField(
+    search_query = forms.ModelChoiceField(
         label=_("Content Search"),
-        max_length=100,
         queryset=ResourceBase.objects.all(),
-        widget=autocomplete.ModelSelect2(
-            url='autocomplete-layer',
+        #widget=forms.TextInput(),
+        widget=TextInputModelSelect2(
+            url='autocomplete_base',
             attrs={
                 'data-placeholder': 'Search',
                 'data-minimum-input-length': 3,

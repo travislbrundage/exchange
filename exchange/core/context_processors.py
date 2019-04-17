@@ -23,7 +23,7 @@ from exchange.version import get_version
 import logging
 from urlparse import urlparse
 from exchange.forms import SearchForm
-from django.urls import reverse
+from django.core.urlresolvers import reverse
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ def resource_variables(request):
             OAM_REMOTE_USER = request.META[settings.GEOAXIS_HEADER]
 
     SEARCH_BAR = {
-        'url': reverse('process-search-form'),
+        'url': reverse('process_search_form'),
         'form': SearchForm(),
     }
 

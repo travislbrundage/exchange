@@ -298,6 +298,7 @@
     <script src="{{ STATIC_URL }}lib/js/waypoints.js?v={{ VERSION }}"></script>
     {% else %}
     <script src="{{ STATIC_URL }}lib/js/assets.min.js?v={{ VERSION }}"></script>
+    {{ SEARCH_BAR.form.media }}
     {% endif %}
     <script src="{{ STATIC_URL }}geonode/js/utils/utils.js?v={{ VERSION }}"></script>
     <script src="{{ STATIC_URL }}geonode/js/base/base.js?v={{ VERSION }}"></script>

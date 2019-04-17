@@ -3,6 +3,7 @@
 {% load theme_tags %}
 {% load static from staticfiles %}
 {% load base_tags %}
+{% load bootstrap_tags %}
 
 {% block title %} {% trans "Welcome!" %} - {{ block.super }} {% endblock %}
 
@@ -23,11 +24,17 @@
   <div class="container">
     <h1>Search for Content</h1>
     <div class="search">
-      <form id="search" action="/search/">
+      <form action="{{ SEARCH_BAR.url }}" method="post">
+        <!--
         <a href="#" onclick="$('.search').find('#search').submit();"><span class="fa fa-search fa-2x"></span></a>
+        -->
+        <input type="submit"/>
+        {% csrf_token %}
+        {{ SEARCH_BAR.form.as_p }}
 
+<!--
         <input id="search_input" type="text" placeholder="Search" class="form-control" name="q"></input>
-
+-->
       </form>
     </div>
   </div>
@@ -126,4 +133,5 @@
 <script>
   $('[data-toggle="tooltip"]').tooltip();
 </script>
+
 {% endblock extra_script %}

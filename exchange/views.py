@@ -50,6 +50,7 @@ from dal import autocomplete
 from geonode.documents.models import Document
 from elasticsearch_app.views import elastic_search
 from exchange.forms import SearchForm
+from geonode.base.models import ResourceBase
 
 if 'geonode.geoserver' in settings.INSTALLED_APPS:
     from geonode.geoserver.helpers import ogc_server_settings
@@ -1058,13 +1059,28 @@ def process_search_form(request):
     # Just in case somehow
     if request.method == 'POST':
         form = SearchForm(request.POST)
+        # What if it's not valid, presumably that's what happens if
+        # you do a query that's not a registered ResourceBase model?
         if form.is_valid():
-            text_query = form.cleaned_data['text_query']
+            search_query = form.cleaned_data['search_query']
+            raise ImportError('form was not valid, not an RB?')
+            # search_query is now a returned object or ResourceBase?
+            # I think it's a ResourceBase model, so test if it's
+            # a Document, Layer, Map, or none of the above
+            # if Document, go to Documents search
+            # actually otherwise you just go to unified search
+            # and use the type query for Layer or Map if it's one of those
+            if type(search_query) is Document:
+                url = reverse('document_browse')
+        else:
+            raise ImportError('form was not valid, not an RB?')
 
-    url = ''
-    return redirect(url)
+    # url = ''
+    # return redirect(reverse('home'))
+    return render(request, 'index.html')
 
-# Autocomplete views - Layer, Maps, Documents
+
+# Autocomplete views - Layer, Maps, Documents, ResourceBase
 class LayerAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
@@ -1117,3 +1133,24 @@ class DocumentAutocomplete(autocomplete.Select2QuerySetView):
         for item in response.data.objects:
             results.append(item.title)
         return response.data.objects
+
+
+class ResourceBaseAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        # response = resolve('/api/base/search/?limit=10&type=layer&q=')
+        # Does self.request include self.q here? Possibly not?
+        # self.request.GET['q'] = self.q
+        response = elastic_search(self.request)
+        # If the above doesn't work, just make a GET request to the URL
+        # '/api/base/search/?limit=10&type=layer&q=' + self.q
+
+        # Do I need to do anything like grab list of titles?
+        # Don't think so, this code can probably be removed
+        #results = []
+        #for item in response.data.objects:
+        #3    results.append(item.title)
+        if 'data' in response:
+            return response.data.objects
+        else:
+            return ResourceBase.objects.all()

@@ -70,8 +70,11 @@ urlpatterns = patterns(
     url(r'^autocomplete-map',
         views.MapAutocomplete.as_view(),
         name='autocomplete_map'),
-    url(r'^search-form', views.process_search_form(),
-        name='process-search-form')
+    url(r'^autocomplete-base',
+        views.ResourceBaseAutocomplete.as_view(),
+        name='autocomplete_base'),
+    url(r'^search-form', views.process_search_form,
+        name='process_search_form')
 )
 
 if settings.MAPLOOM_ENABLED:
